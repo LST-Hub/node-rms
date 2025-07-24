@@ -6,6 +6,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.use(authMiddleware);
 router.post("/", resumeController.saveResumeData);
 router.get("/", resumeController.getUserResumeData);
-
+router.delete("/:id", resumeController.deleteResumeData);
 
 module.exports = router;

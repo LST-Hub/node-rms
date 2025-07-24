@@ -1,8 +1,6 @@
 const { createTransport } = require("nodemailer");
 
 const sendOtp = async ({ email, otp }) => {
-  console.log("Sending OTP to:", email);
-  console.log("Generated OTP:", otp);
   try {
     const transporter = createTransport({
       host: process.env.EMAIL_SERVER_HOST,
@@ -23,7 +21,7 @@ const sendOtp = async ({ email, otp }) => {
           <h2 style="color: #333;">OTP Verification</h2>
           <p>Your OTP verification code is:</p>
           <h1 style="background-color: #f0f0f0; padding: 20px; text-align: center; color: #007bff; letter-spacing: 5px;">${otp}</h1>
-          <p>This code will expire in 1 minute.</p>
+          <p>This code will expire in 3 minute.</p>
           <p>If you didn't request this code, please ignore this email.</p>
         </div>
       `,

@@ -6,7 +6,6 @@ const speakeasy = require("speakeasy");
 
 exports.signup = async (req, res) => {
   const { full_name, email, company_name, mobile_number, password, agreed_to_terms } = req.body;
-  console.log("Received signup request:", req.body);
   
   try {
     const [existingUser] = await db.execute(
@@ -34,7 +33,6 @@ exports.signup = async (req, res) => {
       window: 0,
     });
 
-    console.log("Generated OTP:", otp);
     const timestamp = Date.now();
     const otp_expiry = new Date(timestamp + 3 * 60 * 1000); //  3 minute expiry
 
@@ -42,8 +40,6 @@ exports.signup = async (req, res) => {
       "INSERT INTO users (full_name, email, company_name, mobile_number, agreed_to_terms, password, otp_expiry) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [full_name, email, company_name, mobile_number, agreed_to_terms, hashedPassword, otp_expiry]
     );
-
-    console.log("Database insert result:", result);
 
     if (result.affectedRows > 0) {
       await sendOtp({ email, otp });
@@ -175,14 +171,13 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { 
         userId: user.id, 
         email: user.email,
         full_name: user.full_name 
       },
-      process.env.JWT_SECRET || "your-secret-key",
+      process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
 
@@ -254,8 +249,6 @@ exports.resendOtp = async (req, res) => {
       step: 60,
       window: 0,
     });
-
-    console.log("Resent OTP:", otp);
     const timestamp = Date.now();
 
     await sendOtp({ email, otp });
